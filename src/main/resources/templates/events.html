@@ -1,0 +1,22 @@
+<!-- templates/events.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>イベント一覧</title>
+</head>
+<body>
+    <h1>イベント一覧</h1>
+    <a th:href="@{/events/new}">イベントを作成</a>
+    <ul>
+        <li th:each="event : ${events}">
+            <strong th:text="${event.title}">タイトル</strong>（
+            <span th:text="
+            ${(event.startTime != null ? #temporals.format(event.startTime, 'yyyy-MM-dd HH:mm') : '開始日時未設定')
+            + ' 〜 ' + 
+            (event.endTime != null ? #temporals.format(event.endTime, 'yyyy-MM-dd HH:mm') : '終了日時未設定')}
+            "></span>
+            ）
+        </li>
+    </ul>
+</body>
+</html>

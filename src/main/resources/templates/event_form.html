@@ -1,0 +1,83 @@
+<!-- templates/event_form.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>イベント作成</title>
+</head>
+<body>
+<h1>新しいイベントを作成</h1>
+
+<form th:action="@{/events}" th:object="${event}" method="post">
+
+	<div th:if="${#fields.hasGlobalErrors()}">
+    	<p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+	</div>
+
+	<div th:if="${#fields.hasErrors('title')}" style="color:red">
+		<p th:errors="*{title}">タイトルエラー</p>
+	</div>
+    <label>タイトル: <input type="text" th:field="*{title}" /></label><br>
+    <label>説明: <textarea th:field="*{description}"></textarea></label><br>
+
+	<label>開始日時: <input type="datetime-local" th:field="*{startTime}" /></label><br>
+	<label>終了日時: <input type="datetime-local" th:field="*{endTime}" /></label><br>
+
+    <h2>サブイベント</h2>
+    <div id="subevents">
+		<!-- event.getSubEvents() にあるサブイベント一覧を表示 stat.index → 0から始まるインデックス-->
+        <div th:each="subEvent, stat : *{subEvents}">
+        	<!-- stat.index で添え字（0,1,2...）を使ってフィールド名を動的に割り当て subEvents[0].locationのような形式で制御 -->
+            <label>場所: <input type="text" th:field="*{subEvents[${stat.index}].location}" /></label><br>
+            <!-- ✅ 修正後 -->
+			<label>開始日時: <input type="datetime-local" th:field="*{subEvents[${stat.index}].startTime}" /></label><br>
+			<label>終了日時: <input type="datetime-local" th:field="*{subEvents[${stat.index}].endTime}" /></label><br>
+            <label>内容: <input type="text" th:field="*{subEvents[${stat.index}].activity}" /></label><br>
+            <hr>
+        </div>
+    </div>
+
+    <button type="button" onclick="addSubEvent()">＋サブイベント追加</button><br><br>
+    <button type="submit">作成</button>
+    <a th:href="@{/events}">戻る</a>
+</form>
+
+<template id="subevent-template">
+  <div>
+    <label>場所: <input type="text" name="subEvents[#index#].location" /></label><br>
+    <label>開始日時: <input type="datetime-local" name="subEvents[#index#].startTime" /></label><br>
+    <label>終了日時: <input type="datetime-local" name="subEvents[#index#].endTime" /></label><br>
+    <label>内容: <input type="text" name="subEvents[#index#].activity" /></label><br>
+    <button type="button" onclick="removeSubEvent(this)">削除</button>
+    <hr>
+  </div>
+</template>
+
+    <script>
+		// id=subevents直下のdiv（1つのサブイベント入力欄）の数を変数に渡す
+        let subEventIndex = document.querySelectorAll('#subevents > div').length;
+
+        function addSubEvent() {
+			//templateタグの中身を変数に渡す（次にreplace関数で文字列→数値へ変換するため.innerHTMLを利用する）
+            const template = document.getElementById('subevent-template').innerHTML;
+            //#index#という文字列を数字に置き換える（gは#index#の箇所全て置き換えの意味※gがなければ最初の1こだけ置き換える）
+            const newHtml = template.replace(/#index#/g, subEventIndex);
+            const wrapper = document.createElement('div');
+            //newHtmlをHTMLとして解釈して、wrapper要素の中身として差し込む
+            //wrapperはDOM要素、newHtmlは文字列（String）のため、wrapper.innerHtmlで文字列を出し入れできる窓口を作っている
+            //ここからnwHtmlを代入するとHTMLとして変換（パース）される
+            wrapper.innerHTML = newHtml;
+            //id="subevents" の要素に、wrapper という div要素をまるごと追加
+            document.getElementById('subevents').appendChild(wrapper);
+            subEventIndex++;
+        }
+
+        function removeSubEvent(button) {
+			//削除ボタンから最も近いdiv要素を削除する
+			//補足 closestは上方向：親へ、querySelectorやgetElementByIdは下方向：子へ向かって探す
+            button.closest('div').remove();
+        }
+    </script>
+
+</body>
+</html>
+
