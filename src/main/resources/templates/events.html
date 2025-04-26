@@ -9,7 +9,9 @@
     <a th:href="@{/events/new}">イベントを作成</a>
     <ul>
         <li th:each="event : ${events}">
-            <strong th:text="${event.title}">タイトル</strong>（
+			<a th:href="@{/events/{id}(id=${event.id})}">
+            	<strong th:text="${event.title}">タイトル</strong>
+            </a>（
             <span th:text="
             ${(event.startTime != null ? #temporals.format(event.startTime, 'yyyy-MM-dd HH:mm') : '開始日時未設定')
             + ' 〜 ' + 

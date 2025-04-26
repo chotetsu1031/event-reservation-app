@@ -26,7 +26,7 @@ public class SubEvent {
 
     private String location;
 
-    private String description;
+    private String activity;
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)

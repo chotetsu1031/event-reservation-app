@@ -1,0 +1,36 @@
+<!-- templates/event_detail.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>イベント詳細</title>
+</head>
+<body>
+    <h1 th:text="${event.title}">イベントタイトル</h1>
+
+    <p><strong>説明:</strong> <span th:text="${(event.description != null ? event.description : '未設定')}">イベントの説明</span></p>
+    <p><strong>開始日時:</strong> <span th:text="${(event.startTime != null ? #temporals.format(event.startTime, 'yyyy-MM-dd HH:mm') : '未設定')}">開始時間</span></p>
+    <p><strong>終了日時:</strong> <span th:text="${(event.endTime != null ? #temporals.format(event.endTime, 'yyyy-MM-dd HH:mm') : '未設定')}">終了時間</span></p>
+
+    <h2>サブイベント一覧</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>場所</th>
+                <th>開始時間</th>
+                <th>終了時間</th>
+                <th>内容</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="subEvent : ${subEvents}">
+                <td th:text="${(subEvent.location != null ? subEvent.location : '未設定')}">場所</td>
+                <td th:text="${(subEvent.startTime != null ? #temporals.format(subEvent.startTime, 'yyyy-MM-dd HH:mm') : '未設定')}">開始時間</td>
+                <td th:text="${(subEvent.endTime != null ? #temporals.format(subEvent.endTime, 'yyyy-MM-dd HH:mm') : '未設定')}">終了時間</td>
+                <td th:text="${(subEvent.activity != null ? subEvent.activity : '未設定')}">内容</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/events}" th:text="'一覧に戻る'"></a>
+</body>
+</html>
