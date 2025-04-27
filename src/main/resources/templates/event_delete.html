@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>イベント削除</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<h1>イベント削除</h1>
+<p th:if="${message != null}" th:text="${message}" class="red-message"></p>
+<form th:action="@{/events/delete}" method="post">
+    <table border="1">
+        <thead>
+            <tr>
+                <th>選択</th>
+                <th>タイトル</th>
+                <th>開始日時</th>
+                <th>終了日時</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="event : ${events}">
+                <td><input type="checkbox" name="eventIds" th:value="${event.id}"/></td>
+                <td th:text="${event.title}">タイトル</td>
+                <td th:text="${(event.startTime != null ? #temporals.format(event.startTime, 'yyyy-MM-dd HH:mm') : '未設定')}">開始日時</td>
+                <td th:text="${(event.endTime != null ? #temporals.format(event.endTime, 'yyyy-MM-dd HH:mm') : '未設定')}">終了日時</td>
+            </tr>
+        </tbody>
+    </table>
+	<br>
+    <button type="submit">選択したイベントを削除</button>
+</form>
+<br>
+<a th:href="@{/events}">イベント一覧へ</a>
+
+</body>
+</html>

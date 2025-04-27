@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.event_reservation.model.Event;
 import com.example.event_reservation.model.SubEvent;
@@ -33,6 +35,13 @@ public class EventController {
         List<Event> events = eventRepository.findAll();
         model.addAttribute("events", events);
         return "events";
+    }
+
+    @GetMapping("/delete")
+    public String showDeleteEventList(Model model) {
+        List<Event> events = eventRepository.findAll();
+        model.addAttribute("events", events);
+        return "event_delete";
     }
 
     @GetMapping("/{id}")
@@ -69,6 +78,24 @@ public class EventController {
     	}
     	//Eventごと保存（CascadeType.AllでSubEventも一緒に保存される
         eventRepository.save(event);
+        return "redirect:/events";
+    }
+    @PostMapping("/delete")
+    public String deleteEvent(@RequestParam(name = "eventIds", required = false) List<Long> eventIds, RedirectAttributes redirectAttributes, Model model) {
+        int deletedCount = 0;
+    	if (eventIds != null && !eventIds.isEmpty()) {
+        	deletedCount = eventIds.size();
+            for (Long eventId : eventIds) {
+                eventRepository.deleteById(eventId);
+            }
+        }
+    	if(deletedCount == 0) {
+    		model.addAttribute("message","削除対象のイベントが選択されていません。");
+            List<Event> events = eventRepository.findAll();
+            model.addAttribute("events", events);
+    		return "event_delete";
+    	}
+    	redirectAttributes.addFlashAttribute("message", deletedCount + "件削除されました。");
         return "redirect:/events";
     }
 }
