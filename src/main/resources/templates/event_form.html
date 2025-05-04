@@ -18,6 +18,12 @@
 	</div>
     <label>タイトル: <input type="text" th:field="*{title}" /></label><br>
     <label>説明: <textarea th:field="*{description}"></textarea></label><br>
+    
+    <label>募集人数: </label>
+	<input type="number" th:field="*{capacity}" /><br>
+	<div th:if="${#fields.hasErrors('capacity')}" style="color:red">
+		<p th:errors="*{capacity}">募集人数エラー</p>
+	</div>
 
 	<label>開始日時: <input type="datetime-local" th:field="*{startTime}" /></label><br>
 	<label>終了日時: <input type="datetime-local" th:field="*{endTime}" /></label><br>

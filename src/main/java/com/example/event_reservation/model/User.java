@@ -1,6 +1,12 @@
 // com.example.eventreservation.model.User.java
 package com.example.event_reservation.model;
 
+import java.util.Collection;
+import java.util.Collections;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,4 +34,31 @@ public class User {
     private String password;
 
     private String role = "USER"; // デフォルトで一般ユーザー
+    
+    // UserDetails の実装メソッドたち ↓↓↓
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(() -> "ROLE_" + this.role);
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;  // 無効期限なし
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;  // ロックなし
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;  // パスワードの有効期限なし
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;  // 常に有効
+    }
 }

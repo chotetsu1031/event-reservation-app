@@ -1,0 +1,34 @@
+<!-- templates/reservation_event_list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>イベント一覧（予約）</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <h1>イベント一覧</h1>
+	<p th:if="${message != null}" th:text="${message}" class="green-message"></p>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>タイトル</th>
+                <th>開始日時</th>
+                <th>終了日時</th>
+                <th>募集人数</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="event : ${events}">
+                <td th:text="${event.title}">タイトル</td>
+                <td th:text="${#temporals.format(event.startTime, 'yyyy-MM-dd HH:mm')}">開始日時</td>
+                <td th:text="${#temporals.format(event.endTime, 'yyyy-MM-dd HH:mm')}">終了日時</td>
+                <td th:text="${event.capacity != null ? event.capacity : '指定なし'}">募集人数</td>
+                <td>
+                    <a th:href="@{/reservations/events/{id}(id=${event.id})}">詳細・予約</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
