@@ -18,17 +18,20 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
+    private final CustomAuthenticationSuccessHandler successHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/register", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/events/**").hasRole("ADMIN")
+                .requestMatchers("/reservations/**").hasRole("USER")
                 .anyRequest().authenticated()
             )
             .formLogin(login -> login
                 .loginPage("/login")
-                .defaultSuccessUrl("/", true)
+                .successHandler(successHandler)
                 .permitAll()
             )
             .logout(logout -> logout
