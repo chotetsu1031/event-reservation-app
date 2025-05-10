@@ -33,9 +33,11 @@ public class User implements UserDetails{
     @Column(nullable = false)
     private String password;
 
-    private String role = "USER"; // デフォルトで一般ユーザー
+    private String role = "USER"; // USER：一般ユーザー　ADMIN：管理者
     
-    // UserDetails の実装メソッドたち ↓↓↓
+    private String mailaddress;
+    
+    // UserDetails の実装メソッド ↓↓↓
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

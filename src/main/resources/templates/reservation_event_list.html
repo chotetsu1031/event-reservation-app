@@ -21,8 +21,8 @@
         <tbody>
             <tr th:each="event : ${events}">
                 <td th:text="${event.title}">タイトル</td>
-                <td th:text="${#temporals.format(event.startTime, 'yyyy-MM-dd HH:mm')}">開始日時</td>
-                <td th:text="${#temporals.format(event.endTime, 'yyyy-MM-dd HH:mm')}">終了日時</td>
+                <td th:text="${event.startTime != null ? #temporals.format(event.startTime, 'yyyy-MM-dd HH:mm') : '未設定'}">開始日時</td>
+                <td th:text="${event.endTime != null ? #temporals.format(event.endTime, 'yyyy-MM-dd HH:mm') : '未設定'}">終了日時</td>
                 <td th:text="${event.capacity != null ? event.capacity : '指定なし'}">募集人数</td>
                 <td>
                     <a th:href="@{/reservations/events/{id}(id=${event.id})}">詳細・予約</a>

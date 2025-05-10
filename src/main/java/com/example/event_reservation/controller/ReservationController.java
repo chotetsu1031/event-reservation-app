@@ -4,6 +4,7 @@ package com.example.event_reservation.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ import com.example.event_reservation.model.Reservation;
 import com.example.event_reservation.model.User;
 import com.example.event_reservation.repository.EventRepository;
 import com.example.event_reservation.repository.ReservationRepository;
+import com.example.event_reservation.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +32,15 @@ public class ReservationController {
     private final EventRepository eventRepository;
     private final ReservationRepository reservationRepository;
 
+    @Autowired
+    private ReservationService reservationService;
+    
+    @GetMapping("")
+    public String showEventReservationList(Model model) {
+        List<Event> events = eventRepository.findAll();
+        model.addAttribute("events", events);
+        return "reservation_event_list";
+    }
     // 一般ユーザー向けイベント一覧表示
     @GetMapping("/events")
     public String showEventListForReservation(Model model) {
@@ -54,8 +65,17 @@ public class ReservationController {
     	
     	reservation.setLoginUser(user);
     	reservation.setEvent(event);
+
     	//予約情報を保存
     	reservationRepository.save(reservation);
+    	System.out.println("sendConfirmationMailメソッド呼び出し開始");
+    	if(user == null) {
+    		System.out.println("userはNULLです");
+    	}
+    	System.out.println(user);
+    	//メール送信を実行
+    	reservationService.sendConfirmationMail(user);
+    	
     	redirectAttributes.addFlashAttribute("message", "予約が完了しました。");
     	return "redirect:/reservations/events";
     }
