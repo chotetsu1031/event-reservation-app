@@ -14,7 +14,6 @@ public class ReservationService {
 	private JavaMailSender mailSender;
 
 	public void sendConfirmationMail(User user) {
-		System.out.println("sendConfirmationMailメソッド開始");
 	    SimpleMailMessage message = new SimpleMailMessage();
 	    message.setTo(user.getMailaddress());
 	    message.setSubject("イベント予約完了のお知らせ");
